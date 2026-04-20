@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { team } from "@/data/team";
-import { TelegramIcon, SoundOnIcon, SoundOffIcon } from "@/components/Icon";
+import { TelegramIcon } from "@/components/Icon";
 import { click } from "@/lib/sound";
 
 const TITLE_REDIRECT = "https://t.me/cybsexx/";
@@ -23,7 +23,6 @@ function Index() {
   const profileRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const [active, setActive] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
-  const [sound, setSound] = useState(false);
   const activeRef = useRef<string | null>(null);
   activeRef.current = active;
 
@@ -71,6 +70,8 @@ function Index() {
 
       card.addEventListener("click", () => {
         if (hasDragged) return;
+        // Ignore clicks on cards that are currently in the back / not interactive.
+        if (card.dataset.front !== "1") return;
         onFirstInteraction();
         const slug = card.getAttribute("data-profile");
         if (slug) {
@@ -80,6 +81,7 @@ function Index() {
       });
 
       card.addEventListener("mouseenter", () => {
+        if (card.dataset.front !== "1") return;
         hoveredCard = card;
         autoRotateSpeed = 0;
         click(1400, 0.025);
@@ -191,6 +193,11 @@ function Index() {
         card.style.zIndex = String(Math.floor(z + config.radius));
         card.style.transform = `translateX(${x}px) translateY(${swayY}px) translateZ(${z}px) rotateY(${rotY}deg) rotateX(${config.tilt}deg) rotateZ(${swayRZ}deg)`;
         card.style.opacity = String(opacity);
+        // Disable interactions on back-facing cards so clicks always hit the
+        // visually front-most card. Pre-intro: every card is interactive.
+        const interactive = t < 0.5 ? true : isFront;
+        card.dataset.front = interactive ? "1" : "0";
+        card.style.pointerEvents = interactive ? "auto" : "none";
         const face = card.querySelector<HTMLDivElement>(".card-face");
         if (face) face.style.transform = `scale(${scale})`;
       });
@@ -227,6 +234,7 @@ function Index() {
     if (cornerRRef.current) gsap.to(cornerRRef.current, { opacity: 0.6, duration: 1, delay: 1.5 });
   }, []);
 
+  // Audio is always on. We try to autoplay, then fall back to first user gesture.
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -234,10 +242,9 @@ function Index() {
     const tryPlay = async () => {
       try {
         await audio.play();
-        setSound(true);
       } catch {
         const onFirst = async () => {
-          try { await audio.play(); setSound(true); } catch { /* noop */ }
+          try { await audio.play(); } catch { /* noop */ }
           window.removeEventListener("pointerdown", onFirst);
           window.removeEventListener("keydown", onFirst);
         };
@@ -325,14 +332,6 @@ function Index() {
     window.open(TITLE_REDIRECT, "_blank", "noopener,noreferrer");
   };
 
-  const toggleSound = () => {
-    click(440);
-    const audio = audioRef.current;
-    if (!audio) return;
-    if (sound) { audio.pause(); setSound(false); }
-    else { audio.play().then(() => setSound(true)).catch(() => { /* noop */ }); }
-  };
-
   const quote = "even the darkness has arms";
 
   return (
@@ -341,6 +340,8 @@ function Index() {
       <div className="black-fade" />
       <div className="scanlines" />
       <div className="grain-overlay" />
+      <div className="dither-overlay" />
+      <div className="crunch-overlay" />
       <div className="flicker" />
 
       <audio ref={audioRef} src={asset("audio/song.mp3")} loop preload="auto" />
@@ -437,11 +438,6 @@ function Index() {
       ))}
 
       <button ref={backBtnRef} className="back-btn" onClick={closeProfile}>← return</button>
-
-      <button className="sound-btn" onClick={toggleSound} aria-label="toggle sound">
-        {sound ? <SoundOnIcon size={12} /> : <SoundOffIcon size={12} />}
-        <span>{sound ? "sound on" : "muted"}</span>
-      </button>
 
       {toast && <div className="copy-toast show">{toast}</div>}
     </div>
