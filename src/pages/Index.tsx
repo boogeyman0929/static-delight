@@ -48,7 +48,8 @@ function Index() {
     let selectedSlug: string | null = null;
     let selectionBlend = 0;
     let selectionTarget = 0;
-
+    let returning = false;
+    
     const config = {
       dragSensitivity: 0.005,
       friction: 0.95,
@@ -199,11 +200,12 @@ function Index() {
         selectionTarget = 0;
       }
 
-      selectionBlend += (selectionTarget - selectionBlend) * 0.12;
+      selectionBlend += (selectionTarget - selectionBlend) * 0.08;
 
       cards.forEach((card, i) => {
         const slug = card.getAttribute("data-profile");
         const isSelected = !!slug && slug === selectedSlug;
+        const isReturning = returning;
         const isHovered = hoveredCard === card && !activeRef.current && !selectedSlug;
 
         const swayOff = i * 0.8;
@@ -216,8 +218,16 @@ function Index() {
         const baseOffset = i - (total - 1) / 2;
         const landingX = baseOffset * 220;
 
-        const selectedX = isSelected ? 0 : baseOffset < 0 ? -130 : 130;
-        const selectedZ = isSelected ? 120 : -120;
+        let selectedX = 0;
+        let selectedZ = 0;
+
+       if (selectedSlug) {
+        selectedX = isSelected ? 0 : baseOffset < 0 ? -130 : 130;
+        selectedZ = isSelected ? 120 : -120;
+       } else if (returning) {
+        selectedX = baseOffset * 220;
+        selectedZ = 0;
+       }
         const selectedScale = isSelected ? 1.05 : 0.88;
         const selectedOpacity = isSelected ? 1 : 0.38;
         const selectedRotY = isSelected ? 0 : baseOffset < 0 ? -10 : 10;
@@ -270,7 +280,7 @@ function Index() {
     document.addEventListener("visibilitychange", onVis);
 
 const resetSelection = () => {
-  selectedSlug = null;
+  returning = true;
   selectionTarget = 0;
 };
 
