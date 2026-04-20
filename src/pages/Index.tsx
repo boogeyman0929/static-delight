@@ -222,8 +222,8 @@ function Index() {
         const selectedOpacity = isSelected ? 1 : 0.38;
         const selectedRotY = isSelected ? 0 : baseOffset < 0 ? -10 : 10;
 
-        const hoverScale = isHovered ? 1.04 : 1;
-        const hoverZ = isHovered ? 22 : 0;
+        const hoverScale = 1;
+        const hoverZ = isHovered ? 18 : 0;
 
         const tIntro = introBlend;
         const xPre = introX * (1 - tIntro) + landingX * tIntro;
