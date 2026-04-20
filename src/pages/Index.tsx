@@ -87,10 +87,11 @@ function Index() {
 
         targetAngle = -baseAngle;
 
-        window.setTimeout(() => {
-          if (!activeRef.current) openProfile(slug);
-        }, 380);
-      });
+        setActive(slug);
+
+setTimeout(() => {
+  openProfile(slug);
+}, 200);
 
       card.addEventListener("mouseenter", () => {
         if (card.dataset.front !== "1") return;
@@ -187,23 +188,43 @@ function Index() {
         const introSlant = introOffset * config.introSlant;
         const introZ = introOffset === 0 ? 40 : 0;
 
-        const orbX = Math.sin(angle) * config.radius;
-        const orbZ = Math.cos(angle) * config.radius;
-        const orbRotY = -angle * (180 / Math.PI);
         const depthRatio = (orbZ + config.radius) / (config.radius * 2);
         const isFront = depthRatio > 0.5;
         const orbOpacity = isFront ? 1 : 0.35 + depthRatio * 0.3;
         const orbScale = isFront ? 1 : 0.75 + depthRatio * 0.15;
 
-        const t = introBlend;
-        const x = introX * (1 - t) + orbX * t;
-        const z = introZ * (1 - t) + orbZ * t;
-        const rotY = introSlant * (1 - t) + orbRotY * t;
-        const opacity = 1 * (1 - t) + orbOpacity * t;
-        const scale = 1 * (1 - t) + orbScale * t;
+const isActive = card.getAttribute("data-profile") === activeRef.current;
+
+const offset = i - (total - 1) / 2;
+const baseX = offset * 220;
+
+let x = baseX;
+let z = 0;
+let scale = 1;
+let opacity = 0.6;
+
+if (activeRef.current) {
+  if (isActive) {
+    z = 120;
+    scale = 1.1;
+    opacity = 1;
+  } else {
+    z = -120;
+    scale = 0.85;
+    opacity = 0.4;
+  }
+} else {
+  z = offset === 0 ? 60 : 0;
+  opacity = 1;
+}
 
         card.style.zIndex = String(Math.floor(z + config.radius));
-        card.style.transform = `translateX(${x}px) translateY(${swayY}px) translateZ(${z}px) rotateY(${rotY}deg) rotateX(${config.tilt}deg) rotateZ(${swayRZ}deg)`;
+        card.style.transform = `
+  translateX(${x}px)
+  translateY(${swayY}px)
+  translateZ(${z}px)
+  scale(${scale})
+`;
         card.style.opacity = String(opacity);
         // Disable interactions on back-facing cards so clicks always hit the
         // visually front-most card. Pre-intro: every card is interactive.
