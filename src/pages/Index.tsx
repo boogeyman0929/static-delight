@@ -70,14 +70,26 @@ function Index() {
 
       card.addEventListener("click", () => {
         if (hasDragged) return;
-        // Ignore clicks on cards that are currently in the back / not interactive.
-        if (card.dataset.front !== "1") return;
+        if (activeRef.current) return;
+
         onFirstInteraction();
+
         const slug = card.getAttribute("data-profile");
-        if (slug) {
-          click(660);
-          openProfile(slug);
-        }
+        const baseAngle = parseFloat(card.dataset.baseAngle || "0");
+
+        if (!slug) return;
+
+        click(660);
+
+        hoveredCard = null;
+        autoRotateSpeed = 0;
+        velocity = 0;
+
+        targetAngle = -baseAngle;
+
+        window.setTimeout(() => {
+          if (!activeRef.current) openProfile(slug);
+        }, 380);
       });
 
       card.addEventListener("mouseenter", () => {
