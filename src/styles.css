@@ -4,21 +4,21 @@
 
 @font-face {
   font-family: 'Batman';
-  src: url('/fonts/BatmanEvolution.ttf') format('truetype');
+  src: url('../public/fonts/BatmanEvolution.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'Bilbo';
-  src: url('/fonts/Bilbo.ttf') format('truetype');
+  src: url('../public/fonts/Bilbo.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'Minecraft';
-  src: url('/fonts/Minecraft.ttf') format('truetype');
+  src: url('../public/fonts/Minecraft.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
