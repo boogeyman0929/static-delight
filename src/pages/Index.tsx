@@ -272,7 +272,6 @@ function Index() {
 const resetSelection = () => {
   selectedSlug = null;
   selectionTarget = 0;
-  selectionBlend = 0;
 };
 
     window.addEventListener("lost-reset-cards", resetSelection as EventListener);
