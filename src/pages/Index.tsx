@@ -480,12 +480,12 @@ const resetSelection = () => {
       </div>
 
       <div ref={cornerLRef} className="landing-corner" style={{ opacity: 0 }}>
-        <span className="corner-label">collective</span>
+        <span className="corner-label"></span>
         <span className="corner-val">lost · sh</span>
       </div>
       <div ref={cornerRRef} className="landing-corner-right" style={{ opacity: 0 }}>
-        <span className="corner-label">est.</span>
-        <span className="corner-val">mmxxiii</span>
+        <span className="corner-label"></span>
+        <span className="corner-val">kl · party</span>
       </div>
 
       {team.map((m) => (
