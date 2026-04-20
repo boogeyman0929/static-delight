@@ -443,7 +443,7 @@ const resetSelection = () => {
       <div className="crunch-overlay" />
       <div className="flicker" />
 
-      <audio ref={audioRef} src={asset("audio/song.mp3")} loop preload="auto" />
+      <audio ref={audioRef} src={asset("audio/lost.mp3")} loop preload="auto" />
       <div ref={blackCoverRef} className="bg-black-cover" />
 
       <div ref={titleRef} className="page-title" onClick={handleTitleClick}>
