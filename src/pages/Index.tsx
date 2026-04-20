@@ -87,10 +87,8 @@ function Index() {
 
         targetAngle = -baseAngle;
 
-        setActive(slug);
-
 setTimeout(() => {
-  openProfile(slug);
+  if (!activeRef.current) openProfile(slug);
 }, 200);
 
       card.addEventListener("mouseenter", () => {
