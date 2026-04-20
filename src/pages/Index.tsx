@@ -398,7 +398,7 @@ function Index() {
 
       <div ref={cornerLRef} className="landing-corner" style={{ opacity: 0 }}>
         <span className="corner-label">collective</span>
-        <span className="corner-val">underground · cybersec</span>
+        <span className="corner-val">lost · sh</span>
       </div>
       <div ref={cornerRRef} className="landing-corner-right" style={{ opacity: 0 }}>
         <span className="corner-label">est.</span>
