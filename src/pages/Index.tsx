@@ -75,8 +75,6 @@ function Index() {
         onFirstInteraction();
 
         const slug = card.getAttribute("data-profile");
-        const baseAngle = parseFloat(card.dataset.baseAngle || "0");
-
         if (!slug) return;
 
         click(660);
@@ -85,11 +83,10 @@ function Index() {
         autoRotateSpeed = 0;
         velocity = 0;
 
-        targetAngle = -baseAngle;
-
-setTimeout(() => {
-  if (!activeRef.current) openProfile(slug);
-}, 200);
+        setTimeout(() => {
+          if (!activeRef.current) openProfile(slug);
+        }, 200);
+      });
 
       card.addEventListener("mouseenter", () => {
         if (card.dataset.front !== "1") return;
@@ -97,6 +94,7 @@ setTimeout(() => {
         autoRotateSpeed = 0;
         click(1400, 0.025);
       });
+
       card.addEventListener("mouseleave", () => {
         hoveredCard = null;
         if (hasInteracted) autoRotateSpeed = 0.0003;
@@ -175,61 +173,51 @@ setTimeout(() => {
       currentAngle += (targetAngle - currentAngle) * 0.1;
 
       cards.forEach((card, i) => {
-        const baseAngle = parseFloat(card.dataset.baseAngle || "0");
-        const angle = baseAngle + currentAngle;
         const swayOff = i * 0.8;
         const swayY = Math.sin(swayTime + swayOff) * 8;
-        const swayRZ = Math.sin(swayTime * 0.5 + swayOff) * 1.5;
 
-        const introOffset = i - (total - 1) / 2;
-        const introX = introOffset * config.introGap;
-        const introSlant = introOffset * config.introSlant;
-        const introZ = introOffset === 0 ? 40 : 0;
+        const isActive = card.getAttribute("data-profile") === activeRef.current;
+        const offset = i - (total - 1) / 2;
+        const baseX = offset * 220;
 
-        const depthRatio = (orbZ + config.radius) / (config.radius * 2);
-        const isFront = depthRatio > 0.5;
-        const orbOpacity = isFront ? 1 : 0.35 + depthRatio * 0.3;
-        const orbScale = isFront ? 1 : 0.75 + depthRatio * 0.15;
+        let x = baseX;
+        let z = 0;
+        let scale = 1;
+        let opacity = 0.6;
+        let isFront = true;
 
-const isActive = card.getAttribute("data-profile") === activeRef.current;
-
-const offset = i - (total - 1) / 2;
-const baseX = offset * 220;
-
-let x = baseX;
-let z = 0;
-let scale = 1;
-let opacity = 0.6;
-
-if (activeRef.current) {
-  if (isActive) {
-    z = 120;
-    scale = 1.1;
-    opacity = 1;
-  } else {
-    z = -120;
-    scale = 0.85;
-    opacity = 0.4;
-  }
-} else {
-  z = offset === 0 ? 60 : 0;
-  opacity = 1;
-}
+        if (activeRef.current) {
+          if (isActive) {
+            z = 120;
+            scale = 1.1;
+            opacity = 1;
+            isFront = true;
+          } else {
+            z = -120;
+            scale = 0.85;
+            opacity = 0.4;
+            isFront = false;
+          }
+        } else {
+          z = 0;
+          scale = 1;
+          opacity = 1;
+          isFront = true;
+        }
 
         card.style.zIndex = String(Math.floor(z + config.radius));
         card.style.transform = `
-  translateX(${x}px)
-  translateY(${swayY}px)
-  translateZ(${z}px)
-  scale(${scale})
-`;
+          translateX(${x}px)
+          translateY(${swayY}px)
+          translateZ(${z}px)
+          scale(${scale})
+        `;
         card.style.opacity = String(opacity);
-        // Disable interactions on back-facing cards so clicks always hit the
-        // visually front-most card. Pre-intro: every card is interactive.
         card.dataset.front = isFront ? "1" : "0";
         card.style.pointerEvents = activeRef.current ? "none" : "auto";
+
         const face = card.querySelector<HTMLDivElement>(".card-face");
-        if (face) face.style.transform = `scale(${scale})`;
+        if (face) face.style.transform = "scale(1)";
       });
 
       raf = requestAnimationFrame(animate);
