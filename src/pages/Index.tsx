@@ -207,7 +207,6 @@ function Index() {
         card.style.opacity = String(opacity);
         // Disable interactions on back-facing cards so clicks always hit the
         // visually front-most card. Pre-intro: every card is interactive.
-        const interactive = t < 0.5 ? true : isFront;
         card.dataset.front = isFront ? "1" : "0";
         card.style.pointerEvents = activeRef.current ? "none" : "auto";
         const face = card.querySelector<HTMLDivElement>(".card-face");
