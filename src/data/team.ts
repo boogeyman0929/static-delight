@@ -16,7 +16,7 @@ export const team: Member[] = [
     slug: "kl",
     name: "kl",
     tagline: "xss warrior",
-    telegram: "https://t.me/SadistFucker/",
+    telegram: "https://t.me/sexywaitress/",
     image: klImg,
     interests: [
       "osint",
@@ -41,7 +41,7 @@ export const team: Member[] = [
     slug: "party",
     name: "party",
     tagline: "exploitation focused",
-    telegram: "https://t.me/netIeak/",
+    telegram: "https://t.me/witchcraft028/",
     image: partyImg,
     interests: [
       "osint investigation",
